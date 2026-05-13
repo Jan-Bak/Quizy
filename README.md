@@ -1,75 +1,152 @@
-# React + TypeScript + Vite
+# Quizy - Quiz Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A simple and lightweight quiz application built with React, created for a stag party celebration! 🎉
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- 📤 Upload quizzes from JSON files
+- 💾 Store quizzes and results in IndexedDB
+- 🔄 Persistent data - quizzes are saved locally
+- ⏱️ Optional time limit per question
+- 📊 Track scores and quiz history
 
-## React Compiler
+## Implementation Checklist
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+### Already Done
+- [x] **Project Setup** - initialized with Vite and TypeScript
 
-Note: This will impact Vite dev & build performances.
+### To Implement
+- [ ] **JSON Upload** - form to upload quiz JSON files
+- [ ] **IndexedDB Storage** - save quizzes and results locally
+- [ ] **Quiz Logic** - display questions and verify answers
+- [ ] **Timer** - optional countdown for each question
+- [ ] **Results Screen** - show score summary and history
+- [ ] **Styling** - responsive UI design
+- [ ] **Validation** - verify JSON format before loading
 
-## Expanding the ESLint configuration
+## Quiz JSON Format
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Quizzes should follow this structure:
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
+```json
+{
+  "title": "My Quiz",
+  "description": "Quiz description",
+  "timePerQuestion": 30,
+  "questions": [
+    {
+      "id": "q1",
+      "text": "What is 2 + 2?",
+      "type": "single",
+      "options": [
+        { "id": "a", "text": "3" },
+        { "id": "b", "text": "4" },
+        { "id": "c", "text": "5" }
+      ],
+      "correctAnswers": ["b"]
     },
-  },
-])
+    {
+      "id": "q2",
+      "text": "Which are programming languages? (select multiple)",
+      "type": "multiple",
+      "options": [
+        { "id": "a", "text": "Python" },
+        { "id": "b", "text": "HTML" },
+        { "id": "c", "text": "JavaScript" }
+      ],
+      "correctAnswers": ["a", "c"]
+    }
+  ]
+}
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Architecture
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 ```
+src/
+├── components/
+│   ├── QuizUpload.tsx       # Upload JSON quizzes
+│   ├── QuizContainer.tsx    # Main quiz container
+│   ├── QuestionCard.tsx     # Display question
+│   ├── ResultsScreen.tsx    # Results summary
+│   └── Timer.tsx            # Optional timer
+├── hooks/
+│   ├── useIndexedDB.ts      # IndexedDB operations
+│   └── useQuizState.ts      # Quiz state management
+├── utils/
+│   ├── dbManager.ts         # IndexedDB manager
+│   ├── quizValidator.ts     # JSON validation
+│   └── calculateScore.ts    # Score calculation
+├── types/
+│   └── quiz.ts              # TypeScript types
+├── App.tsx
+└── index.css
+```
+
+## Installation & Setup
+
+### Requirements
+- Node.js 20+
+- pnpm
+
+### Getting Started
+
+```bash
+# Install dependencies
+pnpm install
+
+# Run development server
+pnpm dev
+
+# Build for production
+pnpm build
+
+# Lint code
+pnpm lint
+```
+
+The app will be available at `http://localhost:5173`
+
+## How to Use
+
+1. **Prepare quiz** - create a JSON file in the format described above
+2. **Upload** - click the Upload button and select your JSON file
+3. **Answer questions** - click the correct option for each question
+4. **Results** - view your score and performance
+5. **History** - all quizzes and results are saved locally in IndexedDB
+
+## IndexedDB Structure
+
+All quizzes and results are stored locally in the browser's IndexedDB:
+
+```
+Database: QuizyDB
+  Store: quizzes
+    Key: quizId
+    Data: { id, title, description, questions, createdAt }
+  
+  Store: results
+    Key: resultId
+    Data: { quizId, answers, score, totalQuestions, timestamp }
+```
+
+## Advanced Features
+
+### Time Limit
+Set `"timePerQuestion": 30` in your JSON to give 30 seconds per question. After time runs out, the quiz automatically moves to the next question.
+
+### Question Types
+- `"type": "single"` - single choice (one correct answer)
+- `"type": "multiple"` - multiple choice (multiple correct answers)
+
+## Tech Stack
+
+- **React 19** - UI framework
+- **Vite 8** - build tool
+- **TypeScript** - type-safe JavaScript
+- **IndexedDB** - local browser storage
+- **CSS** - styling (no dependencies, pure CSS)
+
+## License
+
+MIT
