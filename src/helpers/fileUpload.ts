@@ -1,13 +1,13 @@
 export interface FileUploadOptions {
-  maxSize?: number; // in bytes, default: 5MB
+  maxSize?: number;
   allowedTypes?: string[];
   onProgress?: (progress: number) => void; // Progress callback (0-100)
 }
 
-export interface FileUploadResult {
+export interface FileUploadResult<T = unknown> {
   success: boolean;
   message: string;
-  data?: any;
+  data?: T;
   file?: File;
 }
 
@@ -26,7 +26,6 @@ const validateFile = (
     allowedTypes = [],
   } = options;
 
-  // Check file size
   if (file.size > maxSize) {
     return {
       valid: false,
@@ -34,7 +33,6 @@ const validateFile = (
     };
   }
 
-  // Check file type
   if (allowedTypes.length > 0 && !allowedTypes.includes(file.type)) {
     return {
       valid: false,

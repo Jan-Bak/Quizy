@@ -10,11 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as QuizIdRouteImport } from './routes/$quizId'
 import { Route as IndexRouteImport } from './routes/index'
 
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QuizIdRoute = QuizIdRouteImport.update({
+  id: '/$quizId',
+  path: '/$quizId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -25,27 +31,31 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/$quizId': typeof QuizIdRoute
   '/about': typeof AboutRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/$quizId': typeof QuizIdRoute
   '/about': typeof AboutRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/$quizId': typeof QuizIdRoute
   '/about': typeof AboutRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about'
+  fullPaths: '/' | '/$quizId' | '/about'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about'
-  id: '__root__' | '/' | '/about'
+  to: '/' | '/$quizId' | '/about'
+  id: '__root__' | '/' | '/$quizId' | '/about'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  QuizIdRoute: typeof QuizIdRoute
   AboutRoute: typeof AboutRoute
 }
 
@@ -56,6 +66,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$quizId': {
+      id: '/$quizId'
+      path: '/$quizId'
+      fullPath: '/$quizId'
+      preLoaderRoute: typeof QuizIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -70,6 +87,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  QuizIdRoute: QuizIdRoute,
   AboutRoute: AboutRoute,
 }
 export const routeTree = rootRouteImport
