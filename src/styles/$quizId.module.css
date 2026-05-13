@@ -1,16 +1,3 @@
-/* Quiz Game Page - Neon Party Theme */
-
-:root {
-  --neon-cyan: #00f3ff;
-  --neon-purple: #c71585;
-  --neon-pink: #ff006e;
-  --neon-yellow: #ffbe0b;
-  --neon-green: #00ff00;
-  --dark-bg: #0a0e27;
-  --dark-bg-secondary: #1a1f3a;
-  --white: #f8fafc;
-}
-
 .quizContainer {
   width: 100%;
   max-width: 1000px;
