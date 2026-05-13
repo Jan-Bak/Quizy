@@ -1,10 +1,10 @@
 import { useCallback, useMemo, useRef } from 'react';
-import { useIndexDB } from './../hooks/useIndexDB';
-import { readFileAsJSON } from './../helpers/fileUpload';
-import type { Quiz } from './../types/quiz';
+import { useIndexDB } from '../hooks/useIndexDB';
+import { readFileAsJSON } from '../helpers/fileUpload';
+import type { Quiz } from '../types/quiz';
 import { useNavigate } from '@tanstack/react-router';
 
-const QuizList = () => {
+const QuizList: React.FC = () => {
   const db = useIndexDB<Quiz>('quiz-stag-party', 'quiz-list');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();

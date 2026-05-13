@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
-import QuizList from '../components/quizList';
+import QuizList from './../components/QuizList';
 
 const Index = () => {
   return (

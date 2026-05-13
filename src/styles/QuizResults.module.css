@@ -1,0 +1,43 @@
+.quiz-results {
+  padding: 20px;
+  text-align: center;
+}
+
+.quiz-results__title {
+  margin-bottom: 20px;
+}
+
+.quiz-results__score {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.quiz-results__percentage {
+  font-size: 20px;
+  margin-bottom: 20px;
+  color: #666;
+}
+
+.quiz-results__buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.quiz-results__button {
+  padding: 12px 24px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 16px;
+}
+
+.quiz-results__button:hover {
+  background-color: #f0f0f0;
+}
+
+.quiz-results__button:active {
+  transform: scale(0.98);
+}

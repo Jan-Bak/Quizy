@@ -1,0 +1,12 @@
+.quiz-progress {
+  margin-bottom: 20px;
+}
+
+.quiz-progress__question-count {
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.quiz-progress__answered-count {
+  color: #666;
+}
