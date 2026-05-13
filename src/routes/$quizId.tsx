@@ -60,8 +60,14 @@ const QuizIdRoute = () => {
   const currentQ = game.currentQuestion;
 
   return (
-    <div className={styles['quiz-container']}>
-      <h1 className={styles['quiz-container__title']}>{selectedQuiz.title}</h1>
+    <div className={styles.quizContainer}>
+      <div className={styles.quizHeader}>
+        <h1 className={styles.quizTitle}>{selectedQuiz.title}</h1>
+        <button onClick={() => navigate({ to: '/' })} className={styles.backButton}>
+          ← Powrót
+        </button>
+      </div>
+
       <QuizProgress
         currentIndex={game.currentQuestionIndex}
         totalQuestions={game.totalQuestions}
@@ -70,7 +76,7 @@ const QuizIdRoute = () => {
       />
 
       {currentQ && (
-        <div>
+        <div className={styles.quizContent}>
           <QuestionDisplay
             question={currentQ}
             selectedAnswerId={game.getQuestionAnswer(currentQ.id)}

@@ -3,6 +3,7 @@ import { useIndexDB } from '../hooks/useIndexDB';
 import { readFileAsJSON } from '../helpers/fileUpload';
 import type { Quiz } from '../types/quiz';
 import { useNavigate } from '@tanstack/react-router';
+import styles from '../styles/QuizList.module.css';
 
 const QuizList: React.FC = () => {
   const db = useIndexDB<Quiz>('quiz-stag-party', 'quiz-list');
@@ -63,8 +64,8 @@ const QuizList: React.FC = () => {
 
   if (quizList.length === 0) {
     return (
-      <div>
-        <p>No available quizzes.</p>
+      <div className={styles.emptyContainer}>
+        <p className={styles.emptyMessage}>Brak dostępnych quizów. Dodaj swój pierwszy quiz! ✨</p>
         <input
           ref={fileInputRef}
           type="file"
@@ -72,27 +73,31 @@ const QuizList: React.FC = () => {
           onChange={handleFileUpload}
           style={{ display: 'none' }}
         />
-        <button onClick={triggerFileUpload}>Dodaj quiz</button>
+        <button onClick={triggerFileUpload} className={styles.addButton}>
+          ➕ Dodaj quiz
+        </button>
       </div>
     );
   }
 
   return (
-    <div>
-      <h2>Quiz list</h2>
-      <ul>
+    <div className={styles.container}>
+      <h2 className={styles.title}>📋 Twoje Quizy</h2>
+      <ul className={styles.quizList}>
         {quizList.map((quiz) => (
-          <li key={quiz.id}>
-            {quiz.title}
-            <button onClick={() => db.delete(quiz.id)} style={{ marginLeft: '10px' }}>
-              Delete
-            </button>
-            <button
-              onClick={() => navigate({ to: '/$quizId', params: { quizId: quiz.id } })}
-              style={{ marginLeft: '10px' }}
-            >
-              Play
-            </button>
+          <li key={quiz.id} className={styles.quizItem}>
+            <span className={styles.quizTitle}>{quiz.title}</span>
+            <div className={styles.buttonGroup}>
+              <button
+                onClick={() => navigate({ to: '/$quizId', params: { quizId: quiz.id } })}
+                className={styles.playButton}
+              >
+                🎮 Graj
+              </button>
+              <button onClick={() => db.delete(quiz.id)} className={styles.deleteButton}>
+                🗑️ Usuń
+              </button>
+            </div>
           </li>
         ))}
       </ul>
@@ -103,7 +108,9 @@ const QuizList: React.FC = () => {
         onChange={handleFileUpload}
         style={{ display: 'none' }}
       />
-      <button onClick={triggerFileUpload}>Dodaj quiz</button>
+      <button onClick={triggerFileUpload} className={styles.addButton}>
+        ➕ Dodaj nowy quiz
+      </button>
     </div>
   );
 };

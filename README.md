@@ -10,12 +10,31 @@ A simple and lightweight quiz application built with React, created for a stag p
 - ⏱️ Optional time limit per question
 - 📊 Track scores and quiz history
 
+## Environment Configuration
+
+This project uses environment variables for customizing the application. Create a `.env` file in the project root with the following variables:
+
+```env
+VITE_TITLE="Quizy! 🎉"
+VITE_GREETING="Hi!"
+VITE_SUBHEADING="Ready to take the quiz?"
+```
+
+**Important Notes:**
+
+- All environment variables must be prefixed with `VITE_` to be exposed to the client-side code
+- The `.env` file should be placed in the **project root**, not in the `src/` folder
+- Changes to the `.env` file require restarting the dev server
+- Use `import.meta.env.VITE_*` to access variables in your code (e.g., `import.meta.env.VITE_TITLE`)
+
 ## Implementation Checklist
 
 ### Already Done
+
 - [x] **Project Setup** - initialized with Vite and TypeScript
 
 ### To Implement
+
 - [ ] **JSON Upload** - form to upload quiz JSON files
 - [ ] **IndexedDB Storage** - save quizzes and results locally
 - [ ] **Quiz Logic** - display questions and verify answers
@@ -86,6 +105,7 @@ src/
 ## Installation & Setup
 
 ### Requirements
+
 - Node.js 20+
 - pnpm
 
@@ -124,7 +144,7 @@ Database: QuizyDB
   Store: quizzes
     Key: quizId
     Data: { id, title, description, questions, createdAt }
-  
+
   Store: results
     Key: resultId
     Data: { quizId, answers, score, totalQuestions, timestamp }
@@ -133,9 +153,11 @@ Database: QuizyDB
 ## Advanced Features
 
 ### Time Limit
+
 Set `"timePerQuestion": 30` in your JSON to give 30 seconds per question. After time runs out, the quiz automatically moves to the next question.
 
 ### Question Types
+
 - `"type": "single"` - single choice (one correct answer)
 - `"type": "multiple"` - multiple choice (multiple correct answers)
 

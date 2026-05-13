@@ -1,0 +1,292 @@
+/* QuizList Component - Neon Party Theme */
+
+:root {
+  --neon-cyan: #00f3ff;
+  --neon-purple: #c71585;
+  --neon-pink: #ff006e;
+  --neon-yellow: #ffbe0b;
+  --neon-green: #00ff00;
+  --dark-bg: #0a0e27;
+  --dark-bg-secondary: #1a1f3a;
+  --white: #f8fafc;
+}
+
+.container {
+  width: 100%;
+  animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--neon-purple);
+  text-shadow: 0 0 15px rgba(199, 21, 133, 0.7);
+  margin-bottom: 2rem;
+  letter-spacing: 0.05em;
+  text-align: left;
+}
+
+.quizList {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.quizItem {
+  background: linear-gradient(135deg, rgba(26, 31, 58, 0.8), rgba(30, 41, 59, 0.8));
+  border: 2px solid var(--neon-cyan);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow:
+    0 0 20px rgba(0, 243, 255, 0.3),
+    inset 0 1px 0 rgba(199, 21, 133, 0.2);
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+}
+
+.quizItem::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 0, 110, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.quizItem:hover::before {
+  left: 100%;
+}
+
+.quizItem:hover {
+  transform: translateY(-4px) scale(1.02);
+  border-color: var(--neon-pink);
+  box-shadow:
+    0 10px 30px rgba(255, 0, 110, 0.4),
+    inset 0 1px 0 rgba(0, 243, 255, 0.3);
+}
+
+.quizTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--neon-yellow);
+  text-shadow: 0 0 10px rgba(255, 190, 11, 0.6);
+  word-break: break-word;
+  position: relative;
+  z-index: 1;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+
+.playButton,
+.deleteButton {
+  flex: 1;
+  min-width: 100px;
+  padding: 0.75rem 1rem;
+  border: 2px solid;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  position: relative;
+  overflow: hidden;
+}
+
+.playButton {
+  background: linear-gradient(135deg, var(--neon-green), #00ff00);
+  color: var(--dark-bg);
+  border-color: var(--neon-green);
+  box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+  text-shadow: none;
+}
+
+.playButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: left 0.3s ease;
+}
+
+.playButton:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 25px rgba(0, 255, 0, 0.8);
+}
+
+.playButton:hover::before {
+  left: 100%;
+}
+
+.deleteButton {
+  background: linear-gradient(135deg, var(--neon-pink), #ff1744);
+  color: var(--white);
+  border-color: var(--neon-pink);
+  box-shadow: 0 0 15px rgba(255, 0, 110, 0.5);
+  text-shadow: 0 0 5px rgba(255, 0, 110, 0.5);
+}
+
+.deleteButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: left 0.3s ease;
+}
+
+.deleteButton:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 25px rgba(255, 0, 110, 0.8);
+}
+
+.deleteButton:hover::before {
+  left: 100%;
+}
+
+/* Add Button */
+.addButton {
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+  color: var(--white);
+  border: 2px solid var(--neon-cyan);
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 20px rgba(0, 243, 255, 0.6);
+  text-shadow: 0 0 5px rgba(0, 243, 255, 0.5);
+  letter-spacing: 0.05em;
+  position: relative;
+  overflow: hidden;
+}
+
+.addButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.addButton:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow:
+    0 0 30px rgba(0, 243, 255, 0.9),
+    0 0 40px rgba(199, 21, 133, 0.5);
+  border-color: var(--neon-pink);
+}
+
+.addButton:hover::before {
+  left: 100%;
+}
+
+.addButton:active {
+  transform: translateY(0) scale(0.95);
+}
+
+/* Empty State */
+.emptyContainer {
+  text-align: center;
+  padding: 3rem 1rem;
+  background: linear-gradient(135deg, rgba(26, 31, 58, 0.5), rgba(30, 41, 59, 0.5));
+  border: 2px dashed var(--neon-cyan);
+  border-radius: 1rem;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+}
+
+.emptyMessage {
+  font-size: 1.1rem;
+  color: var(--neon-purple);
+  text-shadow: 0 0 10px rgba(199, 21, 133, 0.6);
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.02em;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .quizList {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .quizTitle {
+    font-size: 1.1rem;
+  }
+
+  .addButton {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .quizList {
+    gap: 0.75rem;
+  }
+
+  .title {
+    font-size: 1.25rem;
+  }
+
+  .quizItem {
+    padding: 1rem;
+  }
+
+  .quizTitle {
+    font-size: 1rem;
+  }
+
+  .buttonGroup {
+    flex-direction: column;
+  }
+
+  .playButton,
+  .deleteButton {
+    min-width: auto;
+  }
+
+  .addButton {
+    width: 100%;
+    padding: 0.75rem 1.5rem;
+  }
+}
