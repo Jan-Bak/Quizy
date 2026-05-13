@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo } from 'react';
-import type { Quiz, Question } from '../types/quiz';
+import type { Quiz, Question, LifelineType } from '../types/quiz';
 
 interface UserAnswer {
   questionId: string;
@@ -23,6 +23,12 @@ interface UseQuizGameReturn {
   getQuestionAnswer: (questionId: string) => string | undefined;
   isCurrentAnswerCorrect: boolean | null;
   restartQuiz: () => void;
+  usedLifelines: Record<LifelineType, boolean>;
+  eliminatedAnswers: Set<string>;
+  use50_50: () => void;
+  useCallToFriend: () => void;
+  usePublicVote: () => void;
+  canUseLifeline: (lifelineType: LifelineType) => boolean;
 }
 
 /**
@@ -33,6 +39,12 @@ interface UseQuizGameReturn {
 export function useQuizGame(quiz: Quiz): UseQuizGameReturn {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [userAnswers, setUserAnswers] = useState<UserAnswer[]>([]);
+  const [usedLifelines, setUsedLifelines] = useState<Record<LifelineType, boolean>>({
+    '50/50': false,
+    callToFriend: false,
+    publicVote: false,
+  });
+  const [eliminatedAnswers, setEliminatedAnswers] = useState<Set<string>>(new Set());
 
   // Get current question
   const currentQuestion = useMemo(() => {
@@ -118,7 +130,62 @@ export function useQuizGame(quiz: Quiz): UseQuizGameReturn {
   const restartQuiz = useCallback(() => {
     setCurrentQuestionIndex(0);
     setUserAnswers([]);
+    setUsedLifelines({
+      '50/50': false,
+      callToFriend: false,
+      publicVote: false,
+    });
+    setEliminatedAnswers(new Set());
   }, []);
+
+  // Check if lifeline can be used
+  const canUseLifeline = useCallback(
+    (lifelineType: LifelineType): boolean => {
+      return !usedLifelines[lifelineType];
+    },
+    [usedLifelines]
+  );
+
+  // Use 50/50 lifeline - eliminates 2 wrong answers
+  const use50_50 = useCallback(() => {
+    if (!currentQuestion || usedLifelines['50/50']) return;
+
+    const wrongAnswers = currentQuestion.answers.filter(
+      (a) => a.id !== currentQuestion.correctAnswerId
+    );
+
+    if (wrongAnswers.length < 2) return;
+
+    // Randomly eliminate 2 wrong answers
+    const shuffled = [...wrongAnswers].sort(() => Math.random() - 0.5);
+    const toEliminate = shuffled.slice(0, 2).map((a) => a.id);
+
+    setEliminatedAnswers(new Set(toEliminate));
+    setUsedLifelines((prev) => ({
+      ...prev,
+      '50/50': true,
+    }));
+  }, [currentQuestion, usedLifelines]);
+
+  // Use call to friend lifeline (symbolic - just marks as used)
+  const useCallToFriend = useCallback(() => {
+    if (usedLifelines['callToFriend']) return;
+
+    setUsedLifelines((prev) => ({
+      ...prev,
+      callToFriend: true,
+    }));
+  }, [usedLifelines]);
+
+  // Use public vote lifeline (symbolic - just marks as used)
+  const usePublicVote = useCallback(() => {
+    if (usedLifelines['publicVote']) return;
+
+    setUsedLifelines((prev) => ({
+      ...prev,
+      publicVote: true,
+    }));
+  }, [usedLifelines]);
 
   return {
     quiz,
@@ -137,5 +204,11 @@ export function useQuizGame(quiz: Quiz): UseQuizGameReturn {
     getQuestionAnswer,
     isCurrentAnswerCorrect,
     restartQuiz,
+    usedLifelines,
+    eliminatedAnswers,
+    use50_50,
+    useCallToFriend,
+    usePublicVote,
+    canUseLifeline,
   };
 }

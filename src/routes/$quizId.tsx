@@ -6,6 +6,7 @@ import { AnswerConfirmation } from '../components/AnswerConfirmation';
 import { QuizResults } from '../components/QuizResults';
 import { QuizNotFound } from '../components/QuizNotFound';
 import { QuizProgress } from '../components/QuizProgress';
+import { Lifelines } from '../components/Lifelines';
 import type { Quiz } from '../types/quiz';
 import { useMemo, useState } from 'react';
 import styles from './../styles/$quizId.module.css';
@@ -16,7 +17,7 @@ const QuizIdRoute = () => {
   const db = useIndexDB<Quiz>('quiz-stag-party', 'quiz-list');
 
   const selectedQuiz = useMemo(() => {
-    if (!db) return null;
+    if (!db) return undefined;
     return db.getById(quizId);
   }, [db, quizId]);
 
@@ -63,9 +64,6 @@ const QuizIdRoute = () => {
     <div className={styles.quizContainer}>
       <div className={styles.quizHeader}>
         <h1 className={styles.quizTitle}>{selectedQuiz.title}</h1>
-        <button onClick={() => navigate({ to: '/' })} className={styles.backButton}>
-          ← Powrót
-        </button>
       </div>
 
       <QuizProgress
@@ -77,12 +75,21 @@ const QuizIdRoute = () => {
 
       {currentQ && (
         <div className={styles.quizContent}>
+          <Lifelines
+            usedLifelines={game.usedLifelines}
+            onUse50_50={game.use50_50}
+            onUseCallToFriend={game.useCallToFriend}
+            onUsePublicVote={game.usePublicVote}
+            isAnswerConfirmed={isAnswerConfirmed}
+          />
+
           <QuestionDisplay
             question={currentQ}
             selectedAnswerId={game.getQuestionAnswer(currentQ.id)}
             isAnswerConfirmed={isAnswerConfirmed}
             correctAnswerId={currentQ.correctAnswerId}
             onSelectAnswer={(answerId) => game.selectAnswer(answerId)}
+            eliminatedAnswers={game.eliminatedAnswers}
           />
 
           <AnswerConfirmation

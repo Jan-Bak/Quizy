@@ -16,3 +16,5 @@ export interface Answer {
   id: string;
   text: string;
 }
+
+export type LifelineType = '50/50' | 'callToFriend' | 'publicVote';

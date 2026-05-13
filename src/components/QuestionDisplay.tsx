@@ -8,6 +8,7 @@ interface QuestionDisplayProps {
   isAnswerConfirmed: boolean;
   correctAnswerId: string;
   onSelectAnswer: (answerId: string) => void;
+  eliminatedAnswers?: Set<string>;
 }
 
 export const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
@@ -16,9 +17,15 @@ export const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
   isAnswerConfirmed,
   correctAnswerId,
   onSelectAnswer,
+  eliminatedAnswers = new Set(),
 }) => {
   const getAnswerClasses = (answerId: string): string => {
     const classes = [styles['question-display__answer']];
+
+    if (eliminatedAnswers.has(answerId)) {
+      classes.push(styles['question-display__answer--eliminated']);
+      return classes.join(' ');
+    }
 
     if (isAnswerConfirmed) {
       classes.push(styles['question-display__answer--confirmed']);
@@ -50,18 +57,29 @@ export const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
           <div
             key={answer.id}
             className={getAnswerClasses(answer.id)}
-            onClick={() => !isAnswerConfirmed && onSelectAnswer(answer.id)}
+            onClick={() =>
+              !isAnswerConfirmed && !eliminatedAnswers.has(answer.id) && onSelectAnswer(answer.id)
+            }
           >
             <input
               type="radio"
               name={`question-${question.id}`}
               value={answer.id}
               checked={selectedAnswerId === answer.id}
-              onChange={() => !isAnswerConfirmed && onSelectAnswer(answer.id)}
+              onChange={() =>
+                !isAnswerConfirmed && !eliminatedAnswers.has(answer.id) && onSelectAnswer(answer.id)
+              }
               className={styles['question-display__input']}
-              disabled={isAnswerConfirmed}
+              disabled={isAnswerConfirmed || eliminatedAnswers.has(answer.id)}
             />
             {answer.text}
+            {eliminatedAnswers.has(answer.id) && (
+              <span
+                className={`${styles['question-display__badge']} ${styles['question-display__badge--eliminated']}`}
+              >
+                ✕
+              </span>
+            )}
             {isAnswerConfirmed && answer.id === correctAnswerId && (
               <span
                 className={`${styles['question-display__badge']} ${styles['question-display__badge--correct']}`}
