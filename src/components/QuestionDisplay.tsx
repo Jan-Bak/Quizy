@@ -11,7 +11,6 @@ interface QuestionDisplayProps {
   eliminatedAnswers?: Set<string>;
 }
 
-// Memoized answer item component to prevent re-renders on every map iteration
 interface AnswerItemProps {
   answerId: string;
   answerText: string;
@@ -84,7 +83,7 @@ const AnswerItem: React.FC<AnswerItemProps> = ({
   );
 };
 
-const QuestionDisplayComponent: React.FC<QuestionDisplayProps> = ({
+const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
   question,
   selectedAnswerId,
   isAnswerConfirmed,
@@ -151,4 +150,4 @@ const QuestionDisplayComponent: React.FC<QuestionDisplayProps> = ({
   );
 };
 
-export const QuestionDisplay: React.FC<QuestionDisplayProps> = QuestionDisplayComponent;
+export default QuestionDisplay;

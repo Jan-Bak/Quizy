@@ -5,7 +5,7 @@ interface QuizNotFoundProps {
   onBackToList: () => void;
 }
 
-const QuizNotFoundComponent: React.FC<QuizNotFoundProps> = ({ onBackToList }) => {
+const QuizNotFound: React.FC<QuizNotFoundProps> = ({ onBackToList }) => {
   return (
     <div className={styles['quiz-not-found']}>
       <p className={styles['quiz-not-found__message']}>Quiz not found</p>
@@ -16,4 +16,4 @@ const QuizNotFoundComponent: React.FC<QuizNotFoundProps> = ({ onBackToList }) =>
   );
 };
 
-export const QuizNotFound: React.FC<QuizNotFoundProps> = QuizNotFoundComponent;
+export default QuizNotFound;

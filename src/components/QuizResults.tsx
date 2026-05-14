@@ -8,7 +8,7 @@ interface QuizResultsProps {
   onBackToList: () => void;
 }
 
-const QuizResultsComponent: React.FC<QuizResultsProps> = ({
+const QuizResults: React.FC<QuizResultsProps> = ({
   score,
   totalQuestions,
   onRestart,
@@ -35,4 +35,4 @@ const QuizResultsComponent: React.FC<QuizResultsProps> = ({
   );
 };
 
-export const QuizResults: React.FC<QuizResultsProps> = QuizResultsComponent;
+export default QuizResults;

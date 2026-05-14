@@ -6,7 +6,7 @@ interface QuizProgressProps {
   totalQuestions: number;
 }
 
-const QuizProgressComponent: React.FC<QuizProgressProps> = ({ currentIndex, totalQuestions }) => {
+const QuizProgress: React.FC<QuizProgressProps> = ({ currentIndex, totalQuestions }) => {
   return (
     <div className={styles['quiz-progress']}>
       <div className={styles['quiz-progress__question-count']}>
@@ -16,4 +16,4 @@ const QuizProgressComponent: React.FC<QuizProgressProps> = ({ currentIndex, tota
   );
 };
 
-export const QuizProgress: React.FC<QuizProgressProps> = QuizProgressComponent;
+export default QuizProgress;

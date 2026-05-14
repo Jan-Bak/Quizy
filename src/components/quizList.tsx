@@ -26,7 +26,7 @@ const QuizItem: React.FC<{
 
 QuizItem.displayName = 'QuizItem';
 
-const QuizListComponent: React.FC = () => {
+const QuizList: React.FC = () => {
   const db = useIndexDB<Quiz>('quiz-stag-party', 'quiz-list');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
@@ -137,4 +137,4 @@ const QuizListComponent: React.FC = () => {
   );
 };
 
-export default QuizListComponent;
+export default QuizList;
