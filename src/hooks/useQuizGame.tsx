@@ -29,6 +29,7 @@ interface UseQuizGameReturn {
   useCallToFriend: () => void;
   usePublicVote: () => void;
   canUseLifeline: (lifelineType: LifelineType) => boolean;
+  get50_50UsedForQuestion: () => boolean;
 }
 
 // Fisher-Yates shuffle algorithm for better performance
@@ -55,32 +56,45 @@ export function useQuizGame(quiz: Quiz): UseQuizGameReturn {
     callToFriend: false,
     publicVote: false,
   });
-  const [eliminatedAnswers, setEliminatedAnswers] = useState<Set<string>>(new Set());
+  const [eliminatedAnswersMap, setEliminatedAnswersMap] = useState<Map<string, Set<string>>>(
+    new Map()
+  );
+
+  // Shuffle answers for all questions once when quiz is initialized
+  const shuffledQuiz = useMemo(() => {
+    return {
+      ...quiz,
+      questions: quiz.questions.map((question) => ({
+        ...question,
+        answers: shuffleArray(question.answers),
+      })),
+    };
+  }, [quiz]);
 
   // Get current question
   const currentQuestion = useMemo(() => {
-    if (currentQuestionIndex < quiz.questions.length) {
-      return quiz.questions[currentQuestionIndex];
+    if (currentQuestionIndex < shuffledQuiz.questions.length) {
+      return shuffledQuiz.questions[currentQuestionIndex];
     }
     return null;
-  }, [quiz.questions, currentQuestionIndex]);
+  }, [shuffledQuiz.questions, currentQuestionIndex]);
 
   // Check if quiz is complete
   const isQuizComplete = useMemo(() => {
-    return currentQuestionIndex >= quiz.questions.length;
-  }, [currentQuestionIndex, quiz.questions.length]);
+    return currentQuestionIndex >= shuffledQuiz.questions.length;
+  }, [currentQuestionIndex, shuffledQuiz.questions.length]);
 
   // Calculate score - cache it instead of recalculating every render
   const score = useMemo(() => {
     let correctCount = 0;
     userAnswersMap.forEach((selectedId, questionId) => {
-      const question = quiz.questions.find((q) => q.id === questionId);
+      const question = shuffledQuiz.questions.find((q) => q.id === questionId);
       if (question && question.correctAnswerId === selectedId) {
         correctCount++;
       }
     });
     return correctCount;
-  }, [userAnswersMap, quiz.questions]);
+  }, [userAnswersMap, shuffledQuiz.questions]);
 
   // Get user's answer for a specific question - O(1) with Map instead of O(n) with find
   const getQuestionAnswer = useCallback(
@@ -141,7 +155,7 @@ export function useQuizGame(quiz: Quiz): UseQuizGameReturn {
       callToFriend: false,
       publicVote: false,
     });
-    setEliminatedAnswers(new Set());
+    setEliminatedAnswersMap(new Map());
   }, []);
 
   // Check if lifeline can be used
@@ -166,12 +180,28 @@ export function useQuizGame(quiz: Quiz): UseQuizGameReturn {
     const shuffled = shuffleArray(wrongAnswers);
     const toEliminate = shuffled.slice(0, 2).map((a) => a.id);
 
-    setEliminatedAnswers(new Set(toEliminate));
+    setEliminatedAnswersMap((prev) => {
+      const newMap = new Map(prev);
+      newMap.set(currentQuestion.id, new Set(toEliminate));
+      return newMap;
+    });
     setUsedLifelines((prev) => ({
       ...prev,
       '50/50': true,
     }));
   }, [currentQuestion, usedLifelines]);
+
+  // Check if 50/50 was used for current question
+  const get50_50UsedForQuestion = useCallback(() => {
+    if (!currentQuestion) return false;
+    return eliminatedAnswersMap.has(currentQuestion.id);
+  }, [currentQuestion, eliminatedAnswersMap]);
+
+  // Get eliminated answers for current question
+  const currentEliminatedAnswers = useMemo(() => {
+    if (!currentQuestion) return new Set<string>();
+    return eliminatedAnswersMap.get(currentQuestion.id) ?? new Set<string>();
+  }, [currentQuestion, eliminatedAnswersMap]);
 
   // Use call to friend lifeline (symbolic - just marks as used)
   const useCallToFriend = useCallback(() => {
@@ -194,10 +224,10 @@ export function useQuizGame(quiz: Quiz): UseQuizGameReturn {
   }, [usedLifelines]);
 
   return {
-    quiz,
+    quiz: shuffledQuiz,
     currentQuestion,
     currentQuestionIndex,
-    totalQuestions: quiz.questions.length,
+    totalQuestions: shuffledQuiz.questions.length,
     userAnswers: Array.from(userAnswersMap, ([questionId, selectedAnswerId]) => ({
       questionId,
       selectedAnswerId,
@@ -214,10 +244,11 @@ export function useQuizGame(quiz: Quiz): UseQuizGameReturn {
     isCurrentAnswerCorrect,
     restartQuiz,
     usedLifelines,
-    eliminatedAnswers,
+    eliminatedAnswers: currentEliminatedAnswers,
     use50_50,
     useCallToFriend,
     usePublicVote,
     canUseLifeline,
+    get50_50UsedForQuestion,
   };
 }

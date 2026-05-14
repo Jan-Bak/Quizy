@@ -40,13 +40,23 @@ const QuizIdRoute: React.FC = () => {
   const game = useQuizGame(quizForGame);
 
   const [isAnswerConfirmed, setIsAnswerConfirmed] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
+  // Reset isAnswerConfirmed and show transition animation when moving to next question
+  useEffect(() => {
+    setIsTransitioning(true);
+    const timer = setTimeout(() => {
+      setIsAnswerConfirmed(false);
+      setIsTransitioning(false);
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [game.currentQuestionIndex]);
 
   const handleConfirmAnswer = useCallback(() => {
     setIsAnswerConfirmed(true);
   }, []);
 
   const handleNextQuestion = useCallback(() => {
-    setIsAnswerConfirmed(false);
     game.nextQuestion();
   }, [game.nextQuestion]);
 
@@ -102,24 +112,34 @@ const QuizIdRoute: React.FC = () => {
 
       {currentQ && (
         <div className={styles.quizContent}>
-          <QuestionDisplay
-            question={currentQ}
-            selectedAnswerId={game.getQuestionAnswer(currentQ.id)}
-            isAnswerConfirmed={isAnswerConfirmed}
-            correctAnswerId={currentQ.correctAnswerId}
-            onSelectAnswer={handleSelectAnswer}
-            eliminatedAnswers={game.eliminatedAnswers}
-          />
+          {isTransitioning ? (
+            <div className={styles.transitionLoading}>
+              <div className={styles.loadingSpinner}></div>
+              <p>Przygotowywanie pytania...</p>
+            </div>
+          ) : (
+            <>
+              <QuestionDisplay
+                key={currentQ.id}
+                question={currentQ}
+                selectedAnswerId={game.getQuestionAnswer(currentQ.id)}
+                isAnswerConfirmed={isAnswerConfirmed}
+                correctAnswerId={currentQ.correctAnswerId}
+                onSelectAnswer={handleSelectAnswer}
+                eliminatedAnswers={game.eliminatedAnswers}
+              />
 
-          <AnswerConfirmation
-            isAnswerConfirmed={isAnswerConfirmed}
-            hasAnswerSelected={!!game.getQuestionAnswer(currentQ.id)}
-            canGoPrevious={game.canGoPrevious}
-            isLastQuestion={game.currentQuestionIndex === game.totalQuestions - 1}
-            onConfirm={handleConfirmAnswer}
-            onPrevious={game.previousQuestion}
-            onNext={handleNextQuestion}
-          />
+              <AnswerConfirmation
+                isAnswerConfirmed={isAnswerConfirmed}
+                hasAnswerSelected={!!game.getQuestionAnswer(currentQ.id)}
+                canGoPrevious={game.canGoPrevious}
+                isLastQuestion={game.currentQuestionIndex === game.totalQuestions - 1}
+                onConfirm={handleConfirmAnswer}
+                onPrevious={game.previousQuestion}
+                onNext={handleNextQuestion}
+              />
+            </>
+          )}
         </div>
       )}
     </div>
