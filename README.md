@@ -20,28 +20,21 @@ VITE_GREETING="Hi!"
 VITE_SUBHEADING="Ready to take the quiz?"
 ```
 
-**Important Notes:**
-
-- All environment variables must be prefixed with `VITE_` to be exposed to the client-side code
-- The `.env` file should be placed in the **project root**, not in the `src/` folder
-- Changes to the `.env` file require restarting the dev server
-- Use `import.meta.env.VITE_*` to access variables in your code (e.g., `import.meta.env.VITE_TITLE`)
-
 ## Implementation Checklist
 
 ### Already Done
 
 - [x] **Project Setup** - initialized with Vite and TypeScript
+- [x] **JSON Upload** - form to upload quiz JSON files
+- [x] **IndexedDB Storage** - save quizzes and results locally
+- [x] **Quiz Logic** - display questions and verify answers
+- [x] **Styling** - responsive UI design
+- [x] **Validation** - verify JSON format before loading
 
 ### To Implement
 
-- [ ] **JSON Upload** - form to upload quiz JSON files
-- [ ] **IndexedDB Storage** - save quizzes and results locally
-- [ ] **Quiz Logic** - display questions and verify answers
 - [ ] **Timer** - optional countdown for each question
 - [ ] **Results Screen** - show score summary and history
-- [ ] **Styling** - responsive UI design
-- [ ] **Validation** - verify JSON format before loading
 
 ## Quiz JSON Format
 
@@ -163,11 +156,13 @@ Set `"timePerQuestion": 30` in your JSON to give 30 seconds per question. After 
 
 ## Tech Stack
 
-- **React 19** - UI framework
-- **Vite 8** - build tool
-- **TypeScript** - type-safe JavaScript
-- **IndexedDB** - local browser storage
-- **CSS** - styling (no dependencies, pure CSS)
+- **React 19**
+- **Vite 8**
+- **TypeScript**
+- **IndexedDB**
+- **Module CSS**
+- **i18next**
+- **TanStack Router**
 
 ## License
 
