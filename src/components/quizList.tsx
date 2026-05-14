@@ -1,11 +1,32 @@
-import { useCallback, useMemo, useRef } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import { useIndexDB } from '../hooks/useIndexDB';
 import { readFileAsJSON } from '../helpers/fileUpload';
 import type { Quiz } from '../types/quiz';
 import { useNavigate } from '@tanstack/react-router';
 import styles from '../styles/QuizList.module.css';
 
-const QuizList: React.FC = () => {
+// Quiz item component
+const QuizItem: React.FC<{
+  quiz: Quiz;
+  onPlay: (quizId: string) => void;
+  onDelete: (quizId: string) => void;
+}> = ({ quiz, onPlay, onDelete }) => (
+  <li key={quiz.id} className={styles.quizItem}>
+    <span className={styles.quizTitle}>{quiz.title}</span>
+    <div className={styles.buttonGroup}>
+      <button onClick={() => onPlay(quiz.id)} className={styles.playButton}>
+        🎮 Graj
+      </button>
+      <button onClick={() => onDelete(quiz.id)} className={styles.deleteButton}>
+        🗑️ Usuń
+      </button>
+    </div>
+  </li>
+);
+
+QuizItem.displayName = 'QuizItem';
+
+const QuizListComponent: React.FC = () => {
   const db = useIndexDB<Quiz>('quiz-stag-party', 'quiz-list');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
@@ -62,6 +83,20 @@ const QuizList: React.FC = () => {
     fileInputRef.current?.click();
   }, []);
 
+  const handlePlayQuiz = useCallback(
+    (quizId: string) => {
+      navigate({ to: '/$quizId', params: { quizId } });
+    },
+    [navigate]
+  );
+
+  const handleDeleteQuiz = useCallback(
+    (quizId: string) => {
+      db.delete(quizId);
+    },
+    [db]
+  );
+
   if (quizList.length === 0) {
     return (
       <div className={styles.emptyContainer}>
@@ -85,20 +120,7 @@ const QuizList: React.FC = () => {
       <h2 className={styles.title}>📋 Twoje Quizy</h2>
       <ul className={styles.quizList}>
         {quizList.map((quiz) => (
-          <li key={quiz.id} className={styles.quizItem}>
-            <span className={styles.quizTitle}>{quiz.title}</span>
-            <div className={styles.buttonGroup}>
-              <button
-                onClick={() => navigate({ to: '/$quizId', params: { quizId: quiz.id } })}
-                className={styles.playButton}
-              >
-                🎮 Graj
-              </button>
-              <button onClick={() => db.delete(quiz.id)} className={styles.deleteButton}>
-                🗑️ Usuń
-              </button>
-            </div>
-          </li>
+          <QuizItem key={quiz.id} quiz={quiz} onPlay={handlePlayQuiz} onDelete={handleDeleteQuiz} />
         ))}
       </ul>
       <input
@@ -115,4 +137,4 @@ const QuizList: React.FC = () => {
   );
 };
 
-export default QuizList;
+export default QuizListComponent;

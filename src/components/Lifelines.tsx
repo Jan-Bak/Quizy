@@ -10,7 +10,7 @@ interface LifelinesProps {
   isAnswerConfirmed: boolean;
 }
 
-export const Lifelines: React.FC<LifelinesProps> = ({
+const LifelinesComponent: React.FC<LifelinesProps> = ({
   usedLifelines,
   onUse50_50,
   onUseCallToFriend,
@@ -55,3 +55,5 @@ export const Lifelines: React.FC<LifelinesProps> = ({
     </div>
   );
 };
+
+export const Lifelines: React.FC<LifelinesProps> = LifelinesComponent;

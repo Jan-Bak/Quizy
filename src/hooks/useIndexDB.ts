@@ -96,14 +96,9 @@ export function useIndexDB<T>(
 
         return new Promise<void>((resolve, reject) => {
           request.onsuccess = () => {
-            // Refresh data after add
-            const tx = db.transaction(storeName, 'readonly');
-            const store = tx.objectStore(storeName);
-            const getAllRequest = store.getAll();
-            getAllRequest.onsuccess = () => {
-              setData(getAllRequest.result);
-              resolve();
-            };
+            // Update state with new item instead of refetching all
+            setData((prev) => [...prev, value]);
+            resolve();
           };
 
           request.onerror = () => {
@@ -134,14 +129,11 @@ export function useIndexDB<T>(
 
         return new Promise<void>((resolve, reject) => {
           request.onsuccess = () => {
-            // Refresh data after update
-            const tx = db.transaction(storeName, 'readonly');
-            const store = tx.objectStore(storeName);
-            const getAllRequest = store.getAll();
-            getAllRequest.onsuccess = () => {
-              setData(getAllRequest.result);
-              resolve();
-            };
+            // Update state only for the changed item instead of refetching all
+            setData((prev) =>
+              prev.map((item: any) => (item.id === (value as any).id ? value : item))
+            );
+            resolve();
           };
 
           request.onerror = () => {
@@ -172,14 +164,9 @@ export function useIndexDB<T>(
 
         return new Promise<void>((resolve, reject) => {
           request.onsuccess = () => {
-            // Refresh data after delete
-            const tx = db.transaction(storeName, 'readonly');
-            const store = tx.objectStore(storeName);
-            const getAllRequest = store.getAll();
-            getAllRequest.onsuccess = () => {
-              setData(getAllRequest.result);
-              resolve();
-            };
+            // Update state by removing the item instead of refetching all
+            setData((prev) => prev.filter((item: any) => item.id !== key));
+            resolve();
           };
 
           request.onerror = () => {

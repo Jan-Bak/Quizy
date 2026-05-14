@@ -31,6 +31,16 @@ interface UseQuizGameReturn {
   canUseLifeline: (lifelineType: LifelineType) => boolean;
 }
 
+// Fisher-Yates shuffle algorithm for better performance
+const shuffleArray = <T,>(array: T[]): T[] => {
+  const result = [...array];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+};
+
 /**
  * Hook to manage quiz game state
  * @param quiz - The quiz to play
@@ -38,7 +48,8 @@ interface UseQuizGameReturn {
  */
 export function useQuizGame(quiz: Quiz): UseQuizGameReturn {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [userAnswers, setUserAnswers] = useState<UserAnswer[]>([]);
+  // Use Map for O(1) lookup instead of array with find
+  const [userAnswersMap, setUserAnswersMap] = useState<Map<string, string>>(new Map());
   const [usedLifelines, setUsedLifelines] = useState<Record<LifelineType, boolean>>({
     '50/50': false,
     callToFriend: false,
@@ -59,23 +70,24 @@ export function useQuizGame(quiz: Quiz): UseQuizGameReturn {
     return currentQuestionIndex >= quiz.questions.length;
   }, [currentQuestionIndex, quiz.questions.length]);
 
-  // Calculate score
+  // Calculate score - cache it instead of recalculating every render
   const score = useMemo(() => {
-    return userAnswers.reduce((acc, answer) => {
-      const question = quiz.questions.find((q) => q.id === answer.questionId);
-      if (question && question.correctAnswerId === answer.selectedAnswerId) {
-        return acc + 1;
+    let correctCount = 0;
+    userAnswersMap.forEach((selectedId, questionId) => {
+      const question = quiz.questions.find((q) => q.id === questionId);
+      if (question && question.correctAnswerId === selectedId) {
+        correctCount++;
       }
-      return acc;
-    }, 0);
-  }, [userAnswers, quiz.questions]);
+    });
+    return correctCount;
+  }, [userAnswersMap, quiz.questions]);
 
-  // Get user's answer for a specific question
+  // Get user's answer for a specific question - O(1) with Map instead of O(n) with find
   const getQuestionAnswer = useCallback(
     (questionId: string): string | undefined => {
-      return userAnswers.find((a) => a.questionId === questionId)?.selectedAnswerId;
+      return userAnswersMap.get(questionId);
     },
-    [userAnswers]
+    [userAnswersMap]
   );
 
   // Check if current answer is correct
@@ -86,27 +98,21 @@ export function useQuizGame(quiz: Quiz): UseQuizGameReturn {
     return currentQuestion.correctAnswerId === userAnswer;
   }, [currentQuestion, getQuestionAnswer]);
 
+  // Check if can go to next question (memoized for performance)
+  const canGoNextMemoized = useMemo(
+    () => !isQuizComplete && userAnswersMap.has(currentQuestion?.id ?? ''),
+    [isQuizComplete, userAnswersMap, currentQuestion?.id]
+  );
+
   // Select answer for current question
   const selectAnswer = useCallback(
     (answerId: string) => {
       if (!currentQuestion) return;
 
-      setUserAnswers((prev) => {
-        const existing = prev.findIndex((a) => a.questionId === currentQuestion.id);
-        if (existing !== -1) {
-          // Update existing answer
-          const updated = [...prev];
-          updated[existing].selectedAnswerId = answerId;
-          return updated;
-        }
-        // Add new answer
-        return [
-          ...prev,
-          {
-            questionId: currentQuestion.id,
-            selectedAnswerId: answerId,
-          },
-        ];
+      setUserAnswersMap((prev) => {
+        const newMap = new Map(prev);
+        newMap.set(currentQuestion.id, answerId);
+        return newMap;
       });
     },
     [currentQuestion]
@@ -129,7 +135,7 @@ export function useQuizGame(quiz: Quiz): UseQuizGameReturn {
   // Restart quiz
   const restartQuiz = useCallback(() => {
     setCurrentQuestionIndex(0);
-    setUserAnswers([]);
+    setUserAnswersMap(new Map());
     setUsedLifelines({
       '50/50': false,
       callToFriend: false,
@@ -156,8 +162,8 @@ export function useQuizGame(quiz: Quiz): UseQuizGameReturn {
 
     if (wrongAnswers.length < 2) return;
 
-    // Randomly eliminate 2 wrong answers
-    const shuffled = [...wrongAnswers].sort(() => Math.random() - 0.5);
+    // Use Fisher-Yates shuffle for better performance
+    const shuffled = shuffleArray(wrongAnswers);
     const toEliminate = shuffled.slice(0, 2).map((a) => a.id);
 
     setEliminatedAnswers(new Set(toEliminate));
@@ -192,14 +198,17 @@ export function useQuizGame(quiz: Quiz): UseQuizGameReturn {
     currentQuestion,
     currentQuestionIndex,
     totalQuestions: quiz.questions.length,
-    userAnswers,
+    userAnswers: Array.from(userAnswersMap, ([questionId, selectedAnswerId]) => ({
+      questionId,
+      selectedAnswerId,
+    })),
     isQuizComplete,
     score,
-    answeredQuestions: userAnswers.length,
+    answeredQuestions: userAnswersMap.size,
     selectAnswer,
     nextQuestion,
     previousQuestion,
-    canGoNext: !isQuizComplete && userAnswers.some((a) => a.questionId === currentQuestion?.id),
+    canGoNext: canGoNextMemoized,
     canGoPrevious: currentQuestionIndex > 0,
     getQuestionAnswer,
     isCurrentAnswerCorrect,

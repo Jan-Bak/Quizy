@@ -12,7 +12,7 @@ interface AnswerConfirmationProps {
   onNext: () => void;
 }
 
-export const AnswerConfirmation: React.FC<AnswerConfirmationProps> = ({
+const AnswerConfirmationComponent: React.FC<AnswerConfirmationProps> = ({
   isAnswerConfirmed,
   isCorrect,
   hasAnswerSelected,
@@ -62,3 +62,5 @@ export const AnswerConfirmation: React.FC<AnswerConfirmationProps> = ({
     </div>
   );
 };
+
+export const AnswerConfirmation: React.FC<AnswerConfirmationProps> = AnswerConfirmationComponent;

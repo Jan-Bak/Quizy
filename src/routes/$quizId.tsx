@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import React, { useMemo, useState, useCallback } from 'react';
 import { useIndexDB } from '../hooks/useIndexDB';
 import { useQuizGame } from '../hooks/useQuizGame';
 import { QuestionDisplay } from '../components/QuestionDisplay';
@@ -8,7 +9,6 @@ import { QuizNotFound } from '../components/QuizNotFound';
 import { QuizProgress } from '../components/QuizProgress';
 import { Lifelines } from '../components/Lifelines';
 import type { Quiz } from '../types/quiz';
-import { useMemo, useState } from 'react';
 import styles from './../styles/$quizId.module.css';
 
 const QuizIdRoute = () => {
@@ -32,17 +32,28 @@ const QuizIdRoute = () => {
 
   const [isAnswerConfirmed, setIsAnswerConfirmed] = useState(false);
 
-  const handleConfirmAnswer = () => {
+  const handleConfirmAnswer = useCallback(() => {
     setIsAnswerConfirmed(true);
-  };
+  }, []);
 
-  const handleNextQuestion = () => {
+  const handleNextQuestion = useCallback(() => {
     setIsAnswerConfirmed(false);
     game.nextQuestion();
-  };
+  }, [game.nextQuestion]);
+
+  const handleSelectAnswer = useCallback(
+    (answerId: string) => {
+      game.selectAnswer(answerId);
+    },
+    [game.selectAnswer]
+  );
+
+  const handleBackToList = useCallback(() => {
+    navigate({ to: '/' });
+  }, [navigate]);
 
   if (!selectedQuiz) {
-    return <QuizNotFound onBackToList={() => navigate({ to: '/' })} />;
+    return <QuizNotFound onBackToList={handleBackToList} />;
   }
 
   // Quiz complete - show results
@@ -52,7 +63,7 @@ const QuizIdRoute = () => {
         score={game.score}
         totalQuestions={game.totalQuestions}
         onRestart={game.restartQuiz}
-        onBackToList={() => navigate({ to: '/' })}
+        onBackToList={handleBackToList}
       />
     );
   }
@@ -66,29 +77,28 @@ const QuizIdRoute = () => {
         <h1 className={styles.quizTitle}>{selectedQuiz.title}</h1>
       </div>
 
-      <QuizProgress
-        currentIndex={game.currentQuestionIndex}
-        totalQuestions={game.totalQuestions}
-        answeredCount={game.answeredQuestions}
-        showAnsweredCount={!isAnswerConfirmed}
-      />
+      <div className={styles.progressAndLifelines}>
+        <QuizProgress
+          currentIndex={game.currentQuestionIndex}
+          totalQuestions={game.totalQuestions}
+        />
+        <Lifelines
+          usedLifelines={game.usedLifelines}
+          onUse50_50={game.use50_50}
+          onUseCallToFriend={game.useCallToFriend}
+          onUsePublicVote={game.usePublicVote}
+          isAnswerConfirmed={isAnswerConfirmed}
+        />
+      </div>
 
       {currentQ && (
         <div className={styles.quizContent}>
-          <Lifelines
-            usedLifelines={game.usedLifelines}
-            onUse50_50={game.use50_50}
-            onUseCallToFriend={game.useCallToFriend}
-            onUsePublicVote={game.usePublicVote}
-            isAnswerConfirmed={isAnswerConfirmed}
-          />
-
           <QuestionDisplay
             question={currentQ}
             selectedAnswerId={game.getQuestionAnswer(currentQ.id)}
             isAnswerConfirmed={isAnswerConfirmed}
             correctAnswerId={currentQ.correctAnswerId}
-            onSelectAnswer={(answerId) => game.selectAnswer(answerId)}
+            onSelectAnswer={handleSelectAnswer}
             eliminatedAnswers={game.eliminatedAnswers}
           />
 
