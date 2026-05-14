@@ -114,8 +114,11 @@ const QuizIdRoute: React.FC = () => {
         <div className={styles.quizContent}>
           {isTransitioning ? (
             <div className={styles.transitionLoading}>
-              <div className={styles.loadingSpinner}></div>
-              <p>Przygotowywanie pytania...</p>
+              <div className={styles.confettiContainer}>
+                {Array.from({ length: 20 }).map((_, i) => (
+                  <div key={i} className={styles.confetti}></div>
+                ))}
+              </div>
             </div>
           ) : (
             <>
