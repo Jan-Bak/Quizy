@@ -3,15 +3,15 @@ import React, { useMemo, useState, useCallback } from 'react';
 import { useIndexDB } from '../hooks/useIndexDB';
 import { useQuizGame } from '../hooks/useQuizGame';
 import { QuestionDisplay } from '../components/QuestionDisplay';
-import { AnswerConfirmation } from '../components/AnswerConfirmation';
 import { QuizResults } from '../components/QuizResults';
 import { QuizNotFound } from '../components/QuizNotFound';
 import { QuizProgress } from '../components/QuizProgress';
 import { Lifelines } from '../components/Lifelines';
 import type { Quiz } from '../types/quiz';
 import styles from './../styles/$quizId.module.css';
+import AnswerConfirmation from '../components/AnswerConfirmation';
 
-const QuizIdRoute = () => {
+const QuizIdRoute: React.FC = () => {
   const { quizId } = Route.useParams();
   const navigate = useNavigate();
   const db = useIndexDB<Quiz>('quiz-stag-party', 'quiz-list');
@@ -104,7 +104,6 @@ const QuizIdRoute = () => {
 
           <AnswerConfirmation
             isAnswerConfirmed={isAnswerConfirmed}
-            isCorrect={game.isCurrentAnswerCorrect}
             hasAnswerSelected={!!game.getQuestionAnswer(currentQ.id)}
             canGoPrevious={game.canGoPrevious}
             isLastQuestion={game.currentQuestionIndex === game.totalQuestions - 1}

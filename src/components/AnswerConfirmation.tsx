@@ -3,7 +3,6 @@ import styles from './../styles/AnswerConfirmation.module.css';
 
 interface AnswerConfirmationProps {
   isAnswerConfirmed: boolean;
-  isCorrect: boolean | null;
   hasAnswerSelected: boolean;
   canGoPrevious: boolean;
   isLastQuestion: boolean;
@@ -12,9 +11,8 @@ interface AnswerConfirmationProps {
   onNext: () => void;
 }
 
-const AnswerConfirmationComponent: React.FC<AnswerConfirmationProps> = ({
+const AnswerConfirmation: React.FC<AnswerConfirmationProps> = ({
   isAnswerConfirmed,
-  isCorrect,
   hasAnswerSelected,
   canGoPrevious,
   isLastQuestion,
@@ -38,15 +36,6 @@ const AnswerConfirmationComponent: React.FC<AnswerConfirmationProps> = ({
 
   return (
     <div className={styles['answer-confirmation']}>
-      <div
-        className={`${styles['answer-confirmation__result']} ${
-          isCorrect
-            ? styles['answer-confirmation__result--correct']
-            : styles['answer-confirmation__result--wrong']
-        }`}
-      >
-        {isCorrect ? '🎉 Correct Answer!' : '❌ Wrong Answer!'}
-      </div>
       <div className={styles['answer-confirmation__buttons']}>
         <button
           onClick={onPrevious}
@@ -63,4 +52,4 @@ const AnswerConfirmationComponent: React.FC<AnswerConfirmationProps> = ({
   );
 };
 
-export const AnswerConfirmation: React.FC<AnswerConfirmationProps> = AnswerConfirmationComponent;
+export default AnswerConfirmation;
