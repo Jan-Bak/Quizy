@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useIndexDB } from '../hooks/useIndexDB';
 import { readFileAsJSON } from '../helpers/fileUpload';
 import type { Quiz } from '../types/quiz';
@@ -10,15 +11,17 @@ const QuizItem: React.FC<{
   quiz: Quiz;
   onPlay: (quizId: string) => void;
   onDelete: (quizId: string) => void;
-}> = ({ quiz, onPlay, onDelete }) => (
+  playLabel: string;
+  deleteLabel: string;
+}> = ({ quiz, onPlay, onDelete, playLabel, deleteLabel }) => (
   <li key={quiz.id} className={styles.quizItem}>
     <span className={styles.quizTitle}>{quiz.title}</span>
     <div className={styles.buttonGroup}>
       <button onClick={() => onPlay(quiz.id)} className={styles.playButton}>
-        🎮 Graj
+        {playLabel}
       </button>
       <button onClick={() => onDelete(quiz.id)} className={styles.deleteButton}>
-        🗑️ Usuń
+        {deleteLabel}
       </button>
     </div>
   </li>
@@ -27,6 +30,7 @@ const QuizItem: React.FC<{
 QuizItem.displayName = 'QuizItem';
 
 const QuizList: React.FC = () => {
+  const { t } = useTranslation();
   const db = useIndexDB<Quiz>('quiz-stag-party', 'quiz-list');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
@@ -100,7 +104,7 @@ const QuizList: React.FC = () => {
   if (quizList.length === 0) {
     return (
       <div className={styles.emptyContainer}>
-        <p className={styles.emptyMessage}>Brak dostępnych quizów. Dodaj swój pierwszy quiz! ✨</p>
+        <p className={styles.emptyMessage}>{t('home.noQuizzes')} ✨</p>
         <input
           ref={fileInputRef}
           type="file"
@@ -109,7 +113,7 @@ const QuizList: React.FC = () => {
           style={{ display: 'none' }}
         />
         <button onClick={triggerFileUpload} className={styles.addButton}>
-          ➕ Dodaj quiz
+          ➕ {t('home.uploadQuiz')}
         </button>
       </div>
     );
@@ -117,10 +121,17 @@ const QuizList: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.title}>📋 Twoje Quizy</h2>
+      <h2 className={styles.title}>📋 {t('home.selectQuiz')}</h2>
       <ul className={styles.quizList}>
         {quizList.map((quiz) => (
-          <QuizItem key={quiz.id} quiz={quiz} onPlay={handlePlayQuiz} onDelete={handleDeleteQuiz} />
+          <QuizItem
+            key={quiz.id}
+            quiz={quiz}
+            onPlay={handlePlayQuiz}
+            onDelete={handleDeleteQuiz}
+            playLabel={t('home.play')}
+            deleteLabel={t('home.delete')}
+          />
         ))}
       </ul>
       <input
@@ -131,7 +142,7 @@ const QuizList: React.FC = () => {
         style={{ display: 'none' }}
       />
       <button onClick={triggerFileUpload} className={styles.addButton}>
-        ➕ Dodaj nowy quiz
+        ➕ {t('home.uploadQuiz')}
       </button>
     </div>
   );

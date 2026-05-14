@@ -1,0 +1,50 @@
+{
+  "common": {
+    "appTitle": "Quizy!",
+    "language": "Language",
+    "english": "English",
+    "german": "German",
+    "polish": "Polish"
+  },
+  "home": {
+    "greeting": "Hi! 👋",
+    "subheading": "Ready to solve a quiz?",
+    "selectQuiz": "Select a Quiz",
+    "noQuizzes": "No quizzes available",
+    "uploadQuiz": "Upload Quiz",
+    "play": "🎮 Play",
+    "delete": "🗑️ Delete"
+  },
+  "quiz": {
+    "question": "Question",
+    "answer": "Answer",
+    "nextQuestion": "Next Question",
+    "previous": "Previous",
+    "viewResults": "View Results",
+    "confirmAnswer": "Confirm Answer",
+    "correct": "Correct",
+    "wrong": "Wrong",
+    "questionOf": "Question {{current}} of {{total}}"
+  },
+  "results": {
+    "complete": "Quiz Complete!",
+    "score": "Score",
+    "percentage": "Percentage",
+    "restart": "Restart Quiz",
+    "backToList": "Back to List"
+  },
+  "lifelines": {
+    "fiftyFifty": "50/50",
+    "fiftyFiftyHint": "Remove 2 wrong answers",
+    "fiftyFiftyUsed": "Already used",
+    "callToFriend": "Call a Friend",
+    "callToFriendHint": "Call a friend for help",
+    "publicVote": "Ask the Audience",
+    "publicVoteHint": "Ask the audience",
+    "publicVoteUsed": "Already used"
+  },
+  "errors": {
+    "notFound": "Quiz not found",
+    "goBack": "Go back"
+  }
+}

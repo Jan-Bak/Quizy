@@ -1,0 +1,50 @@
+{
+  "common": {
+    "appTitle": "Quizy!",
+    "language": "Język",
+    "english": "Angielski",
+    "german": "Niemiecki",
+    "polish": "Polski"
+  },
+  "home": {
+    "greeting": "Cześć! 👋",
+    "subheading": "Chętny(-na) do rozwiązania quizu?",
+    "selectQuiz": "Wybierz Quiz",
+    "noQuizzes": "Brak dostępnych quizów",
+    "uploadQuiz": "Wgraj Quiz",
+    "play": "🎮 Graj",
+    "delete": "🗑️ Usuń"
+  },
+  "quiz": {
+    "question": "Pytanie",
+    "answer": "Odpowiedź",
+    "nextQuestion": "Następne Pytanie",
+    "previous": "Wstecz",
+    "viewResults": "Pokaż Wyniki",
+    "confirmAnswer": "Potwierdź Odpowiedź",
+    "correct": "Poprawnie",
+    "wrong": "Błędnie",
+    "questionOf": "Pytanie {{current}} z {{total}}"
+  },
+  "results": {
+    "complete": "Quiz Ukończony!",
+    "score": "Wynik",
+    "percentage": "Procent",
+    "restart": "Powtórz Quiz",
+    "backToList": "Powrót do Listy"
+  },
+  "lifelines": {
+    "fiftyFifty": "50/50",
+    "fiftyFiftyHint": "Usuń 2 błędne odpowiedzi",
+    "fiftyFiftyUsed": "Już użyte",
+    "callToFriend": "Zadzwoń do Przyjaciela",
+    "callToFriendHint": "Zadzwoń do przyjaciela po pomoc",
+    "publicVote": "Zapytaj Publiczność",
+    "publicVoteHint": "Zapytaj publiczność",
+    "publicVoteUsed": "Już użyte"
+  },
+  "errors": {
+    "notFound": "Quiz nie znaleziony",
+    "goBack": "Wróć"
+  }
+}

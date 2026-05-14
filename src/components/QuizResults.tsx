@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import styles from './../styles/QuizResults.module.css';
 
 interface QuizResultsProps {
@@ -14,21 +15,24 @@ const QuizResults: React.FC<QuizResultsProps> = ({
   onRestart,
   onBackToList,
 }) => {
+  const { t } = useTranslation();
   const percentage = Math.round((score / totalQuestions) * 100);
 
   return (
     <div className={styles['quiz-results']}>
-      <h2 className={styles['quiz-results__title']}>Quiz Complete!</h2>
+      <h2 className={styles['quiz-results__title']}>{t('results.complete')}</h2>
       <div className={styles['quiz-results__score']}>
-        Score: {score} / {totalQuestions}
+        {t('results.score')}: {score} / {totalQuestions}
       </div>
-      <div className={styles['quiz-results__percentage']}>Percentage: {percentage}%</div>
+      <div className={styles['quiz-results__percentage']}>
+        {t('results.percentage')}: {percentage}%
+      </div>
       <div className={styles['quiz-results__buttons']}>
         <button onClick={onRestart} className={styles['quiz-results__button']}>
-          Restart Quiz
+          {t('results.restart')}
         </button>
         <button onClick={onBackToList} className={styles['quiz-results__button']}>
-          Back to List
+          {t('results.backToList')}
         </button>
       </div>
     </div>

@@ -1,0 +1,35 @@
+.languageSwitcher {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+}
+
+.flagButton {
+  background: none;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 6px 10px;
+  font-size: 24px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flagButton:hover {
+  background-color: rgba(0, 102, 204, 0.1);
+  transform: scale(1.1);
+}
+
+.flagButton.active {
+  border-color: #0066cc;
+  background-color: rgba(0, 102, 204, 0.2);
+  box-shadow: 0 0 8px rgba(0, 102, 204, 0.3);
+}
+
+.flag {
+  display: inline-block;
+  line-height: 1;
+}

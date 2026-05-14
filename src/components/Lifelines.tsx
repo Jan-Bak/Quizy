@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import type { LifelineType } from '../types/quiz';
 import styles from './../styles/Lifelines.module.css';
 
@@ -17,6 +18,8 @@ const Lifelines: React.FC<LifelinesProps> = ({
   onUsePublicVote,
   isAnswerConfirmed,
 }) => {
+  const { t } = useTranslation();
+
   const isLifelineDisabled = (lifelineType: LifelineType): boolean => {
     return usedLifelines[lifelineType] || isAnswerConfirmed;
   };
@@ -27,30 +30,40 @@ const Lifelines: React.FC<LifelinesProps> = ({
         className={`${styles['lifelines__button']} ${isLifelineDisabled('50/50') ? styles['lifelines__button--disabled'] : ''}`}
         onClick={onUse50_50}
         disabled={isLifelineDisabled('50/50')}
-        title={usedLifelines['50/50'] ? 'Already used' : 'Remove 2 wrong answers'}
+        title={
+          usedLifelines['50/50'] ? t('lifelines.fiftyFiftyUsed') : t('lifelines.fiftyFiftyHint')
+        }
       >
         <span className={styles['lifelines__icon']}>🎯</span>
-        <span className={styles['lifelines__label']}>50/50</span>
+        <span className={styles['lifelines__label']}>{t('lifelines.fiftyFifty')}</span>
       </button>
 
       <button
         className={`${styles['lifelines__button']} ${isLifelineDisabled('callToFriend') ? styles['lifelines__button--disabled'] : ''}`}
         onClick={onUseCallToFriend}
         disabled={isLifelineDisabled('callToFriend')}
-        title={usedLifelines['callToFriend'] ? 'Already used' : 'Call a friend for help'}
+        title={
+          usedLifelines['callToFriend']
+            ? t('lifelines.fiftyFiftyUsed')
+            : t('lifelines.callToFriendHint')
+        }
       >
         <span className={styles['lifelines__icon']}>📞</span>
-        <span className={styles['lifelines__label']}>Call a Friend</span>
+        <span className={styles['lifelines__label']}>{t('lifelines.callToFriend')}</span>
       </button>
 
       <button
         className={`${styles['lifelines__button']} ${isLifelineDisabled('publicVote') ? styles['lifelines__button--disabled'] : ''}`}
         onClick={onUsePublicVote}
         disabled={isLifelineDisabled('publicVote')}
-        title={usedLifelines['publicVote'] ? 'Already used' : 'Ask the audience'}
+        title={
+          usedLifelines['publicVote']
+            ? t('lifelines.publicVoteUsed')
+            : t('lifelines.publicVoteHint')
+        }
       >
         <span className={styles['lifelines__icon']}>🗳️</span>
-        <span className={styles['lifelines__label']}>Public Vote</span>
+        <span className={styles['lifelines__label']}>{t('lifelines.publicVote')}</span>
       </button>
     </div>
   );

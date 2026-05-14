@@ -14,8 +14,10 @@
   "dependencies": {
     "@tanstack/react-router": "^1.169.2",
     "@tanstack/react-router-devtools": "^1.166.13",
+    "i18next": "^26.1.0",
     "react": "^19.2.6",
-    "react-dom": "^19.2.6"
+    "react-dom": "^19.2.6",
+    "react-i18next": "^17.0.7"
   },
   "devDependencies": {
     "@babel/core": "^7.29.0",

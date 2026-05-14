@@ -1,15 +1,16 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import React, { useMemo, useState, useCallback } from 'react';
+import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import { useIndexDB } from '../hooks/useIndexDB';
 import { useQuizGame } from '../hooks/useQuizGame';
-import { QuestionDisplay } from '../components/QuestionDisplay';
-import { QuizResults } from '../components/QuizResults';
-import { QuizNotFound } from '../components/QuizNotFound';
-import { QuizProgress } from '../components/QuizProgress';
-import { Lifelines } from '../components/Lifelines';
+
 import type { Quiz } from '../types/quiz';
 import styles from './../styles/$quizId.module.css';
 import AnswerConfirmation from '../components/AnswerConfirmation';
+import QuizResults from '../components/QuizResults';
+import Lifelines from '../components/Lifelines';
+import QuestionDisplay from '../components/QuestionDisplay';
+import QuizNotFound from '../components/QuizNotFound';
+import QuizProgress from '../components/QuizProgress';
 
 const QuizIdRoute: React.FC = () => {
   const { quizId } = Route.useParams();
@@ -20,6 +21,14 @@ const QuizIdRoute: React.FC = () => {
     if (!db) return undefined;
     return db.getById(quizId);
   }, [db, quizId]);
+
+  // Set page title based on quiz or .env
+  useEffect(() => {
+    if (selectedQuiz) {
+      const pageTitle = import.meta.env.VITE_TITLE || selectedQuiz.title;
+      document.title = pageTitle;
+    }
+  }, [selectedQuiz]);
 
   // Create a default quiz to avoid undefined
   const quizForGame = selectedQuiz || {

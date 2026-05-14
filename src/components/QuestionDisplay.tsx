@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Question } from '../types/quiz';
 import styles from './../styles/QuestionDisplay.module.css';
 
@@ -21,6 +22,8 @@ interface AnswerItemProps {
   questionId: string;
   onSelectAnswer: (answerId: string) => void;
   className: string;
+  correctLabel: string;
+  wrongLabel: string;
 }
 
 const AnswerItem: React.FC<AnswerItemProps> = ({
@@ -33,6 +36,8 @@ const AnswerItem: React.FC<AnswerItemProps> = ({
   questionId,
   onSelectAnswer,
   className,
+  correctLabel,
+  wrongLabel,
 }) => {
   const handleClick = useCallback(() => {
     if (!isAnswerConfirmed && !isEliminated) {
@@ -69,14 +74,14 @@ const AnswerItem: React.FC<AnswerItemProps> = ({
         <span
           className={`${styles['question-display__badge']} ${styles['question-display__badge--correct']}`}
         >
-          ✓ Correct
+          ✓ {correctLabel}
         </span>
       )}
       {isAnswerConfirmed && answerId === selectedAnswerId && answerId !== correctAnswerId && (
         <span
           className={`${styles['question-display__badge']} ${styles['question-display__badge--wrong']}`}
         >
-          ✗ Wrong
+          ✗ {wrongLabel}
         </span>
       )}
     </div>
@@ -91,6 +96,8 @@ const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
   onSelectAnswer,
   eliminatedAnswers = new Set(),
 }) => {
+  const { t } = useTranslation();
+
   const getAnswerClasses = useCallback(
     (answerId: string): string => {
       const classes = [styles['question-display__answer']];
@@ -142,6 +149,8 @@ const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
               questionId={question.id}
               onSelectAnswer={onSelectAnswer}
               className={getAnswerClasses(answer.id)}
+              correctLabel={t('quiz.correct')}
+              wrongLabel={t('quiz.wrong')}
             />
           );
         })}

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import styles from './../styles/AnswerConfirmation.module.css';
 
 interface AnswerConfirmationProps {
@@ -20,6 +21,8 @@ const AnswerConfirmation: React.FC<AnswerConfirmationProps> = ({
   onPrevious,
   onNext,
 }) => {
+  const { t } = useTranslation();
+
   if (!isAnswerConfirmed) {
     return (
       <div className={styles['answer-confirmation__button-container']}>
@@ -28,7 +31,7 @@ const AnswerConfirmation: React.FC<AnswerConfirmationProps> = ({
           disabled={!hasAnswerSelected}
           className={styles['answer-confirmation__confirm-btn']}
         >
-          Confirm Answer
+          {t('quiz.confirmAnswer')}
         </button>
       </div>
     );
@@ -42,10 +45,10 @@ const AnswerConfirmation: React.FC<AnswerConfirmationProps> = ({
           disabled={!canGoPrevious}
           className={styles['answer-confirmation__button']}
         >
-          Previous
+          {t('quiz.previous')}
         </button>
         <button onClick={onNext} className={styles['answer-confirmation__button']}>
-          {isLastQuestion ? 'View Results' : 'Next Question'}
+          {isLastQuestion ? t('quiz.viewResults') : t('quiz.nextQuestion')}
         </button>
       </div>
     </div>
